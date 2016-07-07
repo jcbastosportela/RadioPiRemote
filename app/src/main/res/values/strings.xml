@@ -6,4 +6,10 @@
     <string name="txt_youtube_link">paste link here</string>
     <string name="btn_youtube_submit">Send</string>
     <string name="lbl_youtube">Youtube</string>
+    <string name="btn_radio_link_submit">Send</string>
+    <string name="txt_radio_link">paste link here</string>
+    <string name="lbl_radio_link">Radio link (.pls)</string>
+    <string name="btn_ctrl_stop">Stop</string>
+    <string name="btn_ctrl_volup">+</string>
+    <string name="btn_ctrl_voldown">-</string>
 </resources>

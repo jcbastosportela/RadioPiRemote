@@ -47,11 +47,23 @@ public class MainFragment extends Fragment
     {
         Log.d("Frame", "play_onClick: ");
         MainActivity.conn.send("\u0002" + "ctrl=play" +"\u001d" + "\u0003");
-
     }
 
-    public static void test_onClick( View view )
+    public static void stop_onClick( View view )
     {
-        Log.d("Frame", "test_onClick: ");
+        Log.d("Frame", "stop_onClick: ");
+        MainActivity.conn.send("\u0002" + "ctrl=stop" +"\u001d" + "\u0003");
+    }
+
+    public static void volup_onClick( View view )
+    {
+        Log.d("Frame", "volup_onClick: ");
+        MainActivity.conn.send("\u0002" + "ctrl=volup" +"\u001d" + "\u0003");
+    }
+
+    public static void voldown_onClick( View view )
+    {
+        Log.d("Frame", "voldown_onClick: ");
+        MainActivity.conn.send("\u0002" + "ctrl=voldown" +"\u001d" + "\u0003");
     }
 }

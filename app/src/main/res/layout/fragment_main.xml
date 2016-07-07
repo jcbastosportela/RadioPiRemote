@@ -9,13 +9,48 @@
     tools:context="apps.porty.radiopiremote.MainFragment">
 
     <Button
+        android:text="@string/btn_ctrl_voldown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_ctrl_voldown"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_below="@+id/btn_ctrl_volup"
+        android:layout_centerHorizontal="true"
+        android:onClick="btn_ctrl_onClick" />
+
+    <Button
+        android:text="@string/btn_ctrl_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_ctrl_stop"
+        android:layout_alignBaseline="@+id/btn_play"
+        android:layout_alignBottom="@+id/btn_play"
+        android:layout_toRightOf="@+id/btn_ctrl_volup"
+        android:layout_toEndOf="@+id/btn_ctrl_volup"
+        android:background="@android:drawable/ic_lock_power_off"
+        android:onClick="btn_ctrl_onClick" />
+
+    <Button
         android:text="@string/btn_ctrl_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="49dp"
         android:id="@+id/btn_play"
-        android:onClick="btn_ctrl_onClick" />
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/btn_ctrl_volup"
+        android:layout_toStartOf="@+id/btn_ctrl_volup"
+        tools:ignore="RelativeOverlap"
+        android:background="@android:drawable/ic_media_play"
+        android:onClick="btn_ctrl_onClick"/>
+    <Button
+        android:text="@string/btn_ctrl_volup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_ctrl_volup"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_below="@+id/btn_play"
+        android:layout_alignLeft="@+id/btn_ctrl_voldown"
+        android:layout_alignStart="@+id/btn_ctrl_voldown"
+        android:onClick="btn_ctrl_onClick"/>
 
 </RelativeLayout>

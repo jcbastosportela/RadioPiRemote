@@ -4,34 +4,53 @@ package apps.porty.radiopiremote;
  * Created by porty on 7/6/16.
  */
 /* for TCP comm */
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
+import android.util.Log;
 
-public class TCPConn extends AsyncTask<Void, Void, Void> {
+public class TCPConn extends AsyncTask<Void, Void, Void>
+{
+    public interface CallBack
+    {
+        void TCPResult( boolean bRes );
+    }
 
+    private CallBack connectionEvent;
     String dstAddress;
     int dstPort;
     String response = "";
     Socket socket;
     OutputStream os;
 
-    TCPConn(String addr, int port) {
+    TCPConn(String addr, int port, CallBack connCB)
+    {
+        connectionEvent = connCB;
         dstAddress = addr;
         dstPort = port;
-        try {
-            socket = new Socket(dstAddress, dstPort);
-            os = socket.getOutputStream();
-        }catch (IOException e)
+        Thread ct = new Thread(new ConnectThread());
+        ct.start();
+    }
+
+    class ConnectThread implements Runnable
+    {
+        public void run()
         {
-            e.printStackTrace();
-            response = "IOException: " + e.toString();
+            Log.d("TCP", "Connection thread");
+            try
+            {
+                socket = new Socket(dstAddress, dstPort);
+                os = socket.getOutputStream();
+                connectionEvent.TCPResult(true);
+                return;
+            }catch (IOException e)
+            {
+                e.printStackTrace();
+                response = "IOException: " + e.toString();
+            }
+            connectionEvent.TCPResult(false);
         }
     }
 

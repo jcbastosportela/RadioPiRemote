@@ -1,6 +1,13 @@
 package apps.porty.radiopiremote;
 
+import android.annotation.TargetApi;
+import android.content.ClipData;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +21,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity
+
+public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
 {
     static TCPConn conn;
+    private boolean bTCPConnected;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -32,8 +41,10 @@ public class MainActivity extends AppCompatActivity
      */
     private ViewPager mViewPager;
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -50,23 +61,66 @@ public class MainActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         /* init everything that must be called just once */
         if(null == savedInstanceState)
         {
+            bTCPConnected = false;
             Log.d("Main", "Run just once");
             /* init the TCP  */
-            conn = new TCPConn("192.168.1.27", 1238);
+            conn = new TCPConn("192.168.1.27", 1238, this);
         }
+        /* Check if we are being called via share menu */
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        String action = intent.getAction();
+        if (Intent.ACTION_SEND.equals(action))
+        {
+            /* wait for the connection to become ready. This is nasty, but who cares?! */
+            while (!bTCPConnected)
+            {
+                try {
+                    Thread.sleep(1000, 0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            /* get the youtube link from the intent */
+            ClipData.Item item = intent.getClipData().getItemAt(0);
+            String link = "";
+            link = item.getText().toString();
+            /* is it a link from youtube? */
+            if( link.contains("youtu")) {
+                MainActivity.conn.send("\u0002" + "src=youtube" + "\u001d" + "link=" + link + "\u001d" + "\u0003");
+            }
+            else    /* lets consider Radio */
+            {
+                MainActivity.conn.send("\u0002" + "src=radio" + "\u001d" + "link=" + link + "\u001d" + "\u0003");
+            }
+        }
+    }
+
+    public String parseUriToFilename(Uri uri) {
+        String selectedImagePath = null;
+        String filemanagerPath = uri.getPath();
+
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+
+        if (cursor != null) {
+            // Here you will get a null pointer if cursor is null
+            // This can be if you used OI file manager for picking the media
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            selectedImagePath = cursor.getString(column_index);
+        }
+
+        if (selectedImagePath != null) {
+            return selectedImagePath;
+        }
+        else if (filemanagerPath != null) {
+            return filemanagerPath;
+        }
+        return null;
     }
 
     @Override
@@ -97,13 +151,27 @@ public class MainActivity extends AppCompatActivity
         Log.d("Main", "btn_ctrl_onClick: ");
         switch (view.getId() )
         {
+            /* Main buttons */
             case R.id.btn_play:
                 MainFragment.play_onClick( view );
                 break;
 
-            /*case R.id.btn_test:
-                MainFragment.test_onClick( view );
-                break;*/
+            case R.id.btn_ctrl_stop:
+                MainFragment.stop_onClick( view );
+                break;
+
+            case R.id.btn_ctrl_volup:
+                MainFragment.volup_onClick( view );
+                break;
+
+            case R.id.btn_ctrl_voldown:
+                MainFragment.voldown_onClick( view );
+                break;
+
+            /* buttons from add_frame */
+            case R.id.btn_radio_link_submit:
+                AddFragment.radio_link_send_onClick( view );
+                break;
 
             case R.id.btn_youtube_submit:
                 AddFragment.youtube_send_onClick( view );
@@ -112,5 +180,12 @@ public class MainActivity extends AppCompatActivity
             default:
                 Log.e("Err", "No valid button id");
         }
+    }
+
+    @Override
+    public void TCPResult(boolean bRes)
+    {
+        Log.d("Main", "The TCP connection is " + bRes);
+        bTCPConnected = true;
     }
 }

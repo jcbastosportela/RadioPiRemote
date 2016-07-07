@@ -17,6 +17,7 @@ public class AddFragment extends Fragment {
 
     private int mPage;
     static private EditText mYoutubeLink;
+    static private EditText mRadioLink;
 
     public AddFragment()
     {
@@ -35,6 +36,7 @@ public class AddFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add, container, false);
         mYoutubeLink = (EditText)view.findViewById(R.id.txt_youtube_link);
+        mRadioLink = (EditText)view.findViewById(R.id.txt_radio_link);
         return view;
     }
 
@@ -45,5 +47,14 @@ public class AddFragment extends Fragment {
         Log.d("Frame", "play_onClick: ");
         link = mYoutubeLink.getText().toString();
         MainActivity.conn.send("\u0002" + "src=youtube" +"\u001d" + "link="+ link +"\u001d"+"\u0003");
+    }
+
+    public static void radio_link_send_onClick( View view )
+    {
+        String link = "";
+
+        Log.d("Frame", "play_onClick: ");
+        link = mRadioLink.getText().toString();
+        MainActivity.conn.send("\u0002" + "src=radio" +"\u001d" + "link="+ link +"\u001d"+"\u0003");
     }
 }

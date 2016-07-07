@@ -30,13 +30,42 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:text="@string/lbl_radio_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_youtube_link"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/lbl_radio_link" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="@string/txt_radio_link"
+        android:ems="10"
+        android:layout_below="@+id/lbl_radio_link"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/txt_radio_link" />
+
+    <Button
+        android:text="@string/btn_radio_link_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_radio_link_submit"
+        android:layout_alignBottom="@+id/txt_radio_link"
+        android:layout_toRightOf="@+id/txt_radio_link"
+        android:layout_toEndOf="@+id/txt_radio_link" />
+
     <Button
         android:text="@string/btn_youtube_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_youtube_submit"
         android:onClick="btn_ctrl_onClick"
-        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/txt_youtube_link"
         android:layout_toRightOf="@+id/txt_youtube_link"
         android:layout_toEndOf="@+id/txt_youtube_link" />
 </RelativeLayout>
