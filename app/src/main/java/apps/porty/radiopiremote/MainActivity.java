@@ -1,6 +1,7 @@
 package apps.porty.radiopiremote;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,14 +19,15 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-
 public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
 {
-    static TCPConn conn;
+    public static TCPConn conn;
     private boolean bTCPConnected;
+    public Activity mainAct = this;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -75,6 +77,22 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
         String action = intent.getAction();
         if (Intent.ACTION_SEND.equals(action))
         {
+            /* lunch a thread that will wait the connection to be established and executes req */
+            Thread execIntent = new Thread( new ActionSendThread(intent));
+            execIntent.start();
+        }
+    }
+
+    public class ActionSendThread implements Runnable
+    {
+        private Intent intent;
+
+        ActionSendThread( Intent _intent )
+        {
+            intent = _intent;
+        }
+        @Override
+        public void run() {
             /* wait for the connection to become ready. This is nasty, but who cares?! */
             while (!bTCPConnected)
             {
@@ -85,7 +103,10 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
                 }
             }
             /* get the youtube link from the intent */
-            ClipData.Item item = intent.getClipData().getItemAt(0);
+            ClipData.Item item = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                item = intent.getClipData().getItemAt(0);
+            }
             String link = "";
             link = item.getText().toString();
             /* is it a link from youtube? */
@@ -98,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
             }
         }
     }
-
     public String parseUriToFilename(Uri uri) {
         String selectedImagePath = null;
         String filemanagerPath = uri.getPath();
@@ -138,7 +158,11 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
+            Intent intent = new Intent();
+            intent.setClassName(this, "apps.porty.radiopiremote.PreferencesActivity");
+            startActivity(intent);
             return true;
         }
 

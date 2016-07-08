@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="RadioPi Settings">
+
+        <EditTextPreference
+            android:key="@string/radio_pi_IP"
+            android:title="@string/radio_pi_IP_title"
+            android:summary="@string/radio_pi_IP_summ"
+            android:inputType="number|numberDecimal"
+            android:digits="0123456789."
+            android:defaultValue="192.168.1.24"/>
+
+
+        <EditTextPreference
+            android:key="@string/radio_pi_PORT"
+            android:title="@string/radio_pi_PORT_title"
+            android:summary="@string/radio_pi_PORT_summ"
+            android:inputType="number|numberDecimal"
+            android:digits="0123456789"
+            android:defaultValue="1234"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

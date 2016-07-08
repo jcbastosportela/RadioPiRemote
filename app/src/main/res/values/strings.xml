@@ -12,4 +12,10 @@
     <string name="btn_ctrl_stop">Stop</string>
     <string name="btn_ctrl_volup">+</string>
     <string name="btn_ctrl_voldown">-</string>
+    <string name="radio_pi_IP">radio_pi_IP</string>
+    <string name="radio_pi_IP_title">Radio Pi IP</string>
+    <string name="radio_pi_IP_summ">Enter the IP of you Radio Pi</string>
+    <string name="radio_pi_PORT">radio_pi_PORT</string>
+    <string name="radio_pi_PORT_title">Radio Pi Port</string>
+    <string name="radio_pi_PORT_summ">Enter the Port of you Radio Pi</string>
 </resources>

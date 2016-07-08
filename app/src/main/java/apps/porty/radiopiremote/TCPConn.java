@@ -34,6 +34,13 @@ public class TCPConn extends AsyncTask<Void, Void, Void>
         ct.start();
     }
 
+    public void reconnect(String addr, int port)
+    {
+        dstAddress = addr;
+        dstPort = port;
+        Thread ct = new Thread(new ConnectThread());
+        ct.start();
+    }
     class ConnectThread implements Runnable
     {
         public void run()
