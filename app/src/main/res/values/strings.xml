@@ -2,14 +2,14 @@
     <string name="app_name">RadioPiRemote</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="btn_ctrl_play">Play</string>
     <string name="txt_youtube_link">paste link here</string>
     <string name="btn_youtube_submit">Send</string>
     <string name="lbl_youtube">Youtube</string>
     <string name="btn_radio_link_submit">Send</string>
     <string name="txt_radio_link">paste link here</string>
     <string name="lbl_radio_link">Radio link (.pls)</string>
-    <string name="btn_ctrl_stop">Stop</string>
+    <string name="btn_ctrl_play"></string>
+    <string name="btn_ctrl_stop"></string>
     <string name="btn_ctrl_volup">+</string>
     <string name="btn_ctrl_voldown">-</string>
     <string name="radio_pi_IP">radio_pi_IP</string>
@@ -18,4 +18,7 @@
     <string name="radio_pi_PORT">radio_pi_PORT</string>
     <string name="radio_pi_PORT_title">Radio Pi Port</string>
     <string name="radio_pi_PORT_summ">Enter the Port of you Radio Pi</string>
+    <string name="radio_pi_stts">radio_pi_stts</string>
+    <string name="radio_pi_stts_title">Connection Status</string>
+    <string name="radio_pi_stts_summ">Connection is ...</string>
 </resources>

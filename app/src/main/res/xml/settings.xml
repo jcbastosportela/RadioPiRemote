@@ -14,7 +14,6 @@
             android:digits="0123456789."
             android:defaultValue="192.168.1.24"/>
 
-
         <EditTextPreference
             android:key="@string/radio_pi_PORT"
             android:title="@string/radio_pi_PORT_title"
@@ -22,6 +21,12 @@
             android:inputType="number|numberDecimal"
             android:digits="0123456789"
             android:defaultValue="1234"/>
+
+        <Preference
+            android:key="@string/radio_pi_stts"
+            android:title="@string/radio_pi_stts_title"
+            android:summary="@string/radio_pi_stts_summ"
+            android:selectable="false" />
 
     </PreferenceCategory>
 

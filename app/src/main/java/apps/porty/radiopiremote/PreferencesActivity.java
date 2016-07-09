@@ -15,8 +15,9 @@ import android.util.Log;
 
 public class PreferencesActivity extends PreferenceActivity
 {
-    private static String KEY_PREF_RADIO_PI_IP;
-    private static String KEY_PREF_RADIO_PI_PORT;
+    public static String KEY_PREF_RADIO_PI_IP;
+    public static String KEY_PREF_RADIO_PI_PORT;
+    public static String KEY_PREF_RADIO_PI_STTS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -26,6 +27,7 @@ public class PreferencesActivity extends PreferenceActivity
         /* init the preferences keys */
         KEY_PREF_RADIO_PI_IP = getText(R.string.radio_pi_IP).toString();
         KEY_PREF_RADIO_PI_PORT = getText(R.string.radio_pi_PORT).toString();
+        KEY_PREF_RADIO_PI_STTS = getText(R.string.radio_pi_stts).toString();
 
         getFragmentManager().beginTransaction().replace(android.R.id.content, new RadioPiPreferences()).commit();
     }
@@ -47,6 +49,21 @@ public class PreferencesActivity extends PreferenceActivity
             addPreferencesFromResource(R.xml.settings);
 
             SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
+            Preference connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_STTS);
+            if( MainActivity.bTCPConnected)
+            {
+                // Set summary to be the user-description for the selected value
+                connectionPref.setSummary("Is connected!");
+            }else {
+                // Set summary to be the user-description for the selected value
+                connectionPref.setSummary("Is NOT connected!");
+            }
+            connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_IP);
+            connectionPref.setSummary(sp.getString(PreferencesActivity.KEY_PREF_RADIO_PI_IP, ""));
+
+            connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_PORT);
+            connectionPref.setSummary(sp.getString(PreferencesActivity.KEY_PREF_RADIO_PI_PORT, ""));
+
             sp.registerOnSharedPreferenceChangeListener(this);
         }
 

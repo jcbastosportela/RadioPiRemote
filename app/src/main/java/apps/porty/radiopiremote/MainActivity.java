@@ -1,16 +1,17 @@
 package apps.porty.radiopiremote;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -19,15 +20,16 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
 {
     public static TCPConn conn;
-    private boolean bTCPConnected;
-    public Activity mainAct = this;
+    public static boolean bTCPConnected;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -66,10 +68,14 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
         /* init everything that must be called just once */
         if(null == savedInstanceState)
         {
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
             bTCPConnected = false;
             Log.d("Main", "Run just once");
             /* init the TCP  */
-            conn = new TCPConn("192.168.1.27", 1238, this);
+            String IP = sp.getString(getText(R.string.radio_pi_IP).toString(), "");
+            int Port = Integer.parseInt(sp.getString(getText(R.string.radio_pi_PORT).toString(), ""));
+            conn = new TCPConn(IP, Port, this);
         }
         /* Check if we are being called via share menu */
         Intent intent = getIntent();
@@ -210,6 +216,60 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
     public void TCPResult(boolean bRes)
     {
         Log.d("Main", "The TCP connection is " + bRes);
-        bTCPConnected = true;
+        bTCPConnected = bRes;
+
+        /*
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                int color = 0;
+                if( bTCPConnected )
+                {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        color = getColor(R.color.colorTCPOk);
+                    }
+                    else {
+                        color = getResources().getColor(R.color.colorTCPOk);
+                    }
+                }
+                else
+                {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        color = getColor(R.color.colorTCPNok);
+                    }
+                    else {
+                        color = getResources().getColor(R.color.colorTCPNok);
+                    }
+                }
+
+                // Get the ActionBar
+                ActionBar ab = getSupportActionBar();
+
+                // Create a TextView programmatically.
+                TextView tv = new TextView(getApplicationContext());
+
+                // Create a LayoutParams for TextView
+                ViewGroup.LayoutParams lp = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, // Width of TextView
+                        ViewGroup.LayoutParams.WRAP_CONTENT); // Height of TextView
+
+                // Apply the layout parameters to TextView widget
+                tv.setLayoutParams(lp);
+
+                // Set text to display in TextView
+                tv.setText(ab.getTitle()); // ActionBar title text
+
+                // Set the text color of TextView to red
+                // This line change the ActionBar title text color
+                tv.setTextColor(color);
+
+                // Set the ActionBar display option
+                ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+                // Finally, set the newly created TextView as ActionBar custom view
+                ab.setCustomView(tv);
+            }
+        });*/
     }
 }
