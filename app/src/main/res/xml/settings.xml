@@ -26,7 +26,8 @@
             android:key="@string/radio_pi_stts"
             android:title="@string/radio_pi_stts_title"
             android:summary="@string/radio_pi_stts_summ"
-            android:selectable="false" />
+            android:selectable="true"
+            />
 
     </PreferenceCategory>
 

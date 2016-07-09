@@ -8,8 +8,8 @@
     <string name="btn_radio_link_submit">Send</string>
     <string name="txt_radio_link">paste link here</string>
     <string name="lbl_radio_link">Radio link (.pls)</string>
-    <string name="btn_ctrl_play"></string>
-    <string name="btn_ctrl_stop"></string>
+    <string name="btn_ctrl_play">play</string>
+    <string name="btn_ctrl_stop">stop</string>
     <string name="btn_ctrl_volup">+</string>
     <string name="btn_ctrl_voldown">-</string>
     <string name="radio_pi_IP">radio_pi_IP</string>
@@ -21,4 +21,5 @@
     <string name="radio_pi_stts">radio_pi_stts</string>
     <string name="radio_pi_stts_title">Connection Status</string>
     <string name="radio_pi_stts_summ">Connection is ...</string>
+    <string name="btn_ctrl_pwr">Power Off</string>
 </resources>

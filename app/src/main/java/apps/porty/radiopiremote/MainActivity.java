@@ -22,9 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
 {
@@ -182,6 +179,10 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
         switch (view.getId() )
         {
             /* Main buttons */
+            case R.id.btn_ctrl_pwr:
+                MainFragment.pwr_onClick( view );
+                break;
+
             case R.id.btn_play:
                 MainFragment.play_onClick( view );
                 break;
@@ -212,64 +213,30 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
         }
     }
 
+
+    public interface ConnCallBack
+    {
+        void ConnStts( boolean bStts );
+    }
+    public static ConnCallBack connectionCB;
+    public static void setConnCallback(ConnCallBack _ce)
+    {
+        connectionCB = _ce;
+    }
+
     @Override
     public void TCPResult(boolean bRes)
     {
         Log.d("Main", "The TCP connection is " + bRes);
         bTCPConnected = bRes;
 
-        /*
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run()
-            {
-                int color = 0;
-                if( bTCPConnected )
-                {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        color = getColor(R.color.colorTCPOk);
-                    }
-                    else {
-                        color = getResources().getColor(R.color.colorTCPOk);
-                    }
+        if( null != connectionCB ) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    connectionCB.ConnStts(bTCPConnected);
                 }
-                else
-                {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        color = getColor(R.color.colorTCPNok);
-                    }
-                    else {
-                        color = getResources().getColor(R.color.colorTCPNok);
-                    }
-                }
-
-                // Get the ActionBar
-                ActionBar ab = getSupportActionBar();
-
-                // Create a TextView programmatically.
-                TextView tv = new TextView(getApplicationContext());
-
-                // Create a LayoutParams for TextView
-                ViewGroup.LayoutParams lp = new RelativeLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, // Width of TextView
-                        ViewGroup.LayoutParams.WRAP_CONTENT); // Height of TextView
-
-                // Apply the layout parameters to TextView widget
-                tv.setLayoutParams(lp);
-
-                // Set text to display in TextView
-                tv.setText(ab.getTitle()); // ActionBar title text
-
-                // Set the text color of TextView to red
-                // This line change the ActionBar title text color
-                tv.setTextColor(color);
-
-                // Set the ActionBar display option
-                ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-
-                // Finally, set the newly created TextView as ActionBar custom view
-                ab.setCustomView(tv);
-            }
-        });*/
+            });
+        }
     }
 }

@@ -39,7 +39,7 @@ public class PreferencesActivity extends PreferenceActivity
     }
 
     public static class RadioPiPreferences extends PreferenceFragment
-            implements SharedPreferences.OnSharedPreferenceChangeListener
+            implements SharedPreferences.OnSharedPreferenceChangeListener, MainActivity.ConnCallBack
     {
         @Override
         public void onCreate(Bundle savedInstanceState)
@@ -48,7 +48,32 @@ public class PreferencesActivity extends PreferenceActivity
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.settings);
 
+            MainActivity.setConnCallback(this);
+
             SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
+            Preference connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_STTS);
+            connectionPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    MainActivity.conn.reconnect();
+                    return true;
+                }
+            });
+
+            connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_IP);
+            connectionPref.setSummary(sp.getString(PreferencesActivity.KEY_PREF_RADIO_PI_IP, ""));
+
+            connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_PORT);
+            connectionPref.setSummary(sp.getString(PreferencesActivity.KEY_PREF_RADIO_PI_PORT, ""));
+
+            ConnStts( MainActivity.bTCPConnected );
+
+            sp.registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void ConnStts(boolean bStts)
+        {
             Preference connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_STTS);
             if( MainActivity.bTCPConnected)
             {
@@ -58,13 +83,6 @@ public class PreferencesActivity extends PreferenceActivity
                 // Set summary to be the user-description for the selected value
                 connectionPref.setSummary("Is NOT connected!");
             }
-            connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_IP);
-            connectionPref.setSummary(sp.getString(PreferencesActivity.KEY_PREF_RADIO_PI_IP, ""));
-
-            connectionPref = findPreference(PreferencesActivity.KEY_PREF_RADIO_PI_PORT);
-            connectionPref.setSummary(sp.getString(PreferencesActivity.KEY_PREF_RADIO_PI_PORT, ""));
-
-            sp.registerOnSharedPreferenceChangeListener(this);
         }
 
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)

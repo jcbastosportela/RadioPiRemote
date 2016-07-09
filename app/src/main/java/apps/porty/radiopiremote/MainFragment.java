@@ -66,4 +66,10 @@ public class MainFragment extends Fragment
         Log.d("Frame", "voldown_onClick: ");
         MainActivity.conn.send("\u0002" + "ctrl=voldown" +"\u001d" + "\u0003");
     }
+
+    public static void pwr_onClick(View view)
+    {
+        Log.d("Frame", "voldown_onClick: ");
+        MainActivity.conn.send("\u0002" + "ctrl=pwr" +"\u001d" + "\u0003");
+    }
 }

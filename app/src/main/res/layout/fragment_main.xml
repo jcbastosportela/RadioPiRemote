@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_ctrl_volup"
-        style="@style/Widget.AppCompat.Button.Small"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_below="@+id/btn_play"
         android:layout_alignLeft="@+id/btn_ctrl_voldown"
         android:layout_alignStart="@+id/btn_ctrl_voldown"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_ctrl_voldown"
-        style="@style/Widget.AppCompat.Button.Small"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_below="@+id/btn_ctrl_volup"
         android:layout_centerHorizontal="true"
         android:onClick="btn_ctrl_onClick" />
@@ -37,7 +37,7 @@
         android:layout_alignBottom="@+id/btn_play"
         android:layout_toRightOf="@+id/btn_ctrl_volup"
         android:layout_toEndOf="@+id/btn_ctrl_volup"
-        android:src="@android:drawable/ic_lock_power_off"
+        android:src="@android:drawable/checkbox_off_background"
         android:onClick="btn_ctrl_onClick"
         style="@style/Widget.AppCompat.Button.Borderless" />
 
@@ -46,7 +46,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="51dp"
         android:id="@+id/btn_play"
-        tools:ignore="RelativeOverlap"
         android:src="@android:drawable/ic_media_play"
         android:contentDescription="@string/btn_ctrl_play"
         android:onClick="btn_ctrl_onClick"
@@ -54,5 +53,16 @@
         android:layout_toLeftOf="@+id/btn_ctrl_volup"
         android:layout_toStartOf="@+id/btn_ctrl_volup"
         style="@style/Widget.AppCompat.Button.Borderless" />
+
+    <ImageButton
+        android:src="@android:drawable/ic_lock_power_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/btn_ctrl_pwr"
+        android:onClick="btn_ctrl_onClick"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:contentDescription="@string/btn_ctrl_pwr" />
 
 </RelativeLayout>
