@@ -69,7 +69,7 @@ public class MainFragment extends Fragment
 
     public static void pwr_onClick(View view)
     {
-        Log.d("Frame", "voldown_onClick: ");
-        MainActivity.conn.send("\u0002" + "ctrl=pwr" +"\u001d" + "\u0003");
+        Log.d("Frame", "pwr_onClick: ");
+        MainActivity.conn.send("\u0002" + "cmd=pwr" +"\u001d" + "\u0003");
     }
 }
