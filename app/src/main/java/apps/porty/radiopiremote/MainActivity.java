@@ -42,6 +42,31 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
      */
     private ViewPager mViewPager;
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.d("Main", "onResume called");
+        /* Check if we are being called via share menu */
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        String action = intent.getAction();
+        try {
+            if ((boolean) extras.get("used"))
+                return;
+        }catch (Exception err){}
+
+        if (Intent.ACTION_SEND.equals(action))
+        {
+            /* lunch a thread that will wait the connection to be established and executes req */
+            Thread execIntent = new Thread( new ActionSendThread(intent));
+            execIntent.start();
+            intent.setAction("");
+            intent.removeExtra("key");
+            intent.putExtra("used", true);
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -74,16 +99,6 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
             int Port = Integer.parseInt(sp.getString(getText(R.string.radio_pi_PORT).toString(), ""));
             conn = new TCPConn(IP, Port, this);
         }
-        /* Check if we are being called via share menu */
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        String action = intent.getAction();
-        if (Intent.ACTION_SEND.equals(action))
-        {
-            /* lunch a thread that will wait the connection to be established and executes req */
-            Thread execIntent = new Thread( new ActionSendThread(intent));
-            execIntent.start();
-        }
     }
 
     public class ActionSendThread implements Runnable
@@ -112,14 +127,7 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
             }
             String link = "";
             link = item.getText().toString();
-            /* is it a link from youtube? */
-            if( link.contains("youtu")) {
-                MainActivity.conn.send("\u0002" + "src=youtube" + "\u001d" + "link=" + link + "\u001d" + "\u0003");
-            }
-            else    /* lets consider Radio */
-            {
-                MainActivity.conn.send("\u0002" + "src=radio" + "\u001d" + "link=" + link + "\u001d" + "\u0003");
-            }
+            MainActivity.conn.send("\u0002" + "src=media" + "\u001d" + link + "\u001d" + "\u0003");
         }
     }
     public String parseUriToFilename(Uri uri) {
