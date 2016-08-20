@@ -2,6 +2,7 @@ package apps.porty.radiopiremote;
 
 import android.annotation.TargetApi;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.app.AlertDialog;
 
 public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
 {
@@ -110,7 +112,8 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
             intent = _intent;
         }
         @Override
-        public void run() {
+        public void run()
+        {
             /* wait for the connection to become ready. This is nasty, but who cares?! */
             while (!bTCPConnected)
             {
@@ -120,14 +123,50 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
                     e.printStackTrace();
                 }
             }
-            /* get the youtube link from the intent */
-            ClipData.Item item = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                item = intent.getClipData().getItemAt(0);
-            }
-            String link = "";
-            link = item.getText().toString();
-            MainActivity.conn.send("\u0002" + "src=media" + "\u001d" + link + "\u001d" + "\u0003");
+
+
+            runOnUiThread(new Runnable() {
+                public void run()
+                {
+                    /* ask what to do */
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder
+                            .setTitle("Reproduce options")
+                            .setMessage("Also add to playlist?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                            {
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                            /* get the youtube link from the intent */
+                                    ClipData.Item item = null;
+                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                        item = intent.getClipData().getItemAt(0);
+                                    }
+                                    String link = "";
+                                    link = item.getText().toString();
+                                    MainActivity.conn.send("\u0002" + "add=media" + "\u001d" + link + "\u001d" + "\u0003");
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                    /* get the youtube link from the intent */
+                            ClipData.Item item = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                                item = intent.getClipData().getItemAt(0);
+                            }
+                            String link = "";
+                            link = item.getText().toString();
+                            MainActivity.conn.send("\u0002" + "src=media" + "\u001d" + link + "\u001d" + "\u0003");
+                            //dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
         }
     }
     public String parseUriToFilename(Uri uri) {
