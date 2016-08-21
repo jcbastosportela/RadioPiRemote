@@ -4,34 +4,48 @@ package apps.porty.radiopiremote;
  * Created by porty on 7/6/16.
  */
 /* for TCP comm */
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class TCPConn extends AsyncTask<Void, Void, Void>
 {
-    public interface CallBack
+    public interface TCPResCallBack
     {
         void TCPResult( boolean bRes );
     }
 
-    private CallBack connectionEvent;
+    public interface PlaylistAddCallBack
+    {
+        void addPlaylistEntry( String entry );
+    }
+
+    private TCPResCallBack connectionEvent;
+    private PlaylistAddCallBack playlistEntryEvent;
     String dstAddress;
     int dstPort;
     String response = "";
     Socket socket;
     OutputStream os;
 
-    TCPConn(String addr, int port, CallBack connCB)
+    TCPConn(String addr, int port, TCPResCallBack connCB)
     {
         connectionEvent = connCB;
         dstAddress = addr;
         dstPort = port;
         Thread ct = new Thread(new ConnectThread());
         ct.start();
+    }
+
+    public void setPlaylistEntryCallBack( PlaylistAddCallBack plsCB )
+    {
+        playlistEntryEvent = plsCB;
     }
 
     public void reconnect()
@@ -57,6 +71,7 @@ public class TCPConn extends AsyncTask<Void, Void, Void>
                 socket = new Socket(dstAddress, dstPort);
                 os = socket.getOutputStream();
                 connectionEvent.TCPResult(true);
+                doInBackground();
                 return;
             }catch (IOException e)
             {
@@ -80,17 +95,21 @@ public class TCPConn extends AsyncTask<Void, Void, Void>
     @Override
     protected Void doInBackground(Void... arg0)
     {
-        /*
         try {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
-            byte[] buffer = new byte[1024];
+            while(true) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
+                byte[] buffer = new byte[1024];
 
-            int bytesRead;
-            InputStream inputStream = socket.getInputStream();
+                int bytesRead;
+                InputStream inputStream = socket.getInputStream();
 
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                byteArrayOutputStream.write(buffer, 0, bytesRead);
-                response += byteArrayOutputStream.toString("UTF-8");
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    byteArrayOutputStream.write(buffer, 0, bytesRead);
+                    response = byteArrayOutputStream.toString("UTF-8");
+                    if( null != playlistEntryEvent ) {
+                        playlistEntryEvent.addPlaylistEntry(response);
+                    }
+                }
             }
 
         } catch (UnknownHostException e) {
@@ -111,7 +130,6 @@ public class TCPConn extends AsyncTask<Void, Void, Void>
                 }
             }
         }
-        */
         return null;
     }
 

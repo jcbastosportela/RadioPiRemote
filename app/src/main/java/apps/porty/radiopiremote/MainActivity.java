@@ -9,10 +9,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -25,7 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.app.AlertDialog;
 
-public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
+public class MainActivity extends AppCompatActivity implements TCPConn.TCPResCallBack
 {
     public static TCPConn conn;
     public static boolean bTCPConnected;
@@ -98,7 +96,12 @@ public class MainActivity extends AppCompatActivity implements TCPConn.CallBack
             Log.d("Main", "Run just once");
             /* init the TCP  */
             String IP = sp.getString(getText(R.string.radio_pi_IP).toString(), "");
-            int Port = Integer.parseInt(sp.getString(getText(R.string.radio_pi_PORT).toString(), ""));
+            int Port = 0;
+            try {
+                Port = Integer.parseInt(sp.getString(getText(R.string.radio_pi_PORT).toString(), ""));
+            }catch (Exception e)
+            {
+            }
             conn = new TCPConn(IP, Port, this);
         }
     }
