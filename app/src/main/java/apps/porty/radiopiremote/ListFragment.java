@@ -10,6 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by porty on 7/5/16.
  */
@@ -18,6 +21,7 @@ public class ListFragment extends Fragment implements TCPConn.PlaylistAddCallBac
     public static final String ARG_PAGE = "section_number";
 
     private int mPage;
+    private int btId;
     private LinearLayout rlButtons;
     private View rootView;
 
@@ -42,23 +46,29 @@ public class ListFragment extends Fragment implements TCPConn.PlaylistAddCallBac
 
         MainActivity.conn.setPlaylistEntryCallBack( this );
         /* request playlist */
+        rlButtons.removeAllViews();
+        btId = 0;
         MainActivity.conn.send("\u0002" + "cmd=gpls" + "\u001d\u0003");
         return rootView;
     }
 
-    private static String sStrEntry;
+    //private static String sStrEntry;
+    List<String> sStrEntry = new LinkedList<String>();
     @Override
-    public void addPlaylistEntry( String strEntry )
+    public void addPlaylistEntry(final String strEntry )
     {
-        /* TODO implement the population of the playlist */
-        sStrEntry = strEntry;
+        sStrEntry.add(strEntry);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Button button = new Button(rootView.getContext());
-                button.setText(sStrEntry);
-                button.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                rlButtons.addView(button);
+                if( !sStrEntry.isEmpty() ) {
+                    Button button = new Button(rootView.getContext());
+                    button.setText(sStrEntry.get(0));
+                    sStrEntry.remove(0);
+                    button.setId(btId++);
+                    button.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    rlButtons.addView(button);
+                }
             }
         });
 
